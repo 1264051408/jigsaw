@@ -1,0 +1,40 @@
+/*音乐部分修正*/
+.music {
+    text-align: center;
+}
+.music tr {
+    height: 30px;
+    line-height: 30px;
+}
+/*游戏按钮的布局*/
+.btnBox {
+    height: 35px;
+    margin-top: 20px;
+}
+
+.gameReady {
+    padding-bottom: 30px;
+}
+/*游戏布局的样式*/
+#box {
+    margin-top: 20px;
+    position: relative;
+    background: url('../image/main-bg.jpg') no-repeat center;
+    background-size: cover;
+    /*border: 24px groove hsla(175,100%,90%,1);*/
+    box-sizing: content-box;
+    border: 30px solid pink;
+    border-image: url(../image/borderbox.jpg) 115 115 round;
+}
+#box ul {
+    padding: 0;
+    list-style: none;
+}
+#box li {
+    float: left;
+}
+#box span {
+    display: inline-block;
+    border-radius: 10%;
+    position: absolute;
+}

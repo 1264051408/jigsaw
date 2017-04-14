@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>拼图游戏</title>
+    <link rel="stylesheet" href="cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
+    <!--[if lte IE 9]>
+    <script src="cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+    </style>
+</head>
+<body>
+<!--图片选择部分-->
+<div class="imagebox container">
+    <div class="page-header">
+        <h1>模式选择 <small>设置图片与难度</small></h1>
+    </div>
+    <div class="row" id="scanImage">
+
+    </div>
+</div>
+<!--确认游戏信息和模式-->
+<div class="panel panel-danger container gameReady">
+    <h4 class="panel-body text-center text-danger">
+        当前的游戏难度选择
+    </h4>
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-success gameModel" value="3">简单</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-info gameModel" value="4">中等</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning gameModel" value="5">高级</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger gameModel" value="6">复杂</button>
+        </div>
+    </div>
+    <h4 class="panel-footer text-center">设置好图片和模式以后您就可以开始进行游戏了    </h4>
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary" id="game-Img">图片 ( 默认 )</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary" id="game-Mod">难度( 默认 )</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary" id="gameStart">开始游戏</button>
+        </div>
+    </div>
+</div>
+<!--提示的模态框-->
+<button type="button" class="btn btn-primary hidden" data-toggle="modal" data-target=".bs-example-modal-sm" id="target">提示框</button>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body text-center" id="targetText">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--动态进度条-->
+<div class="container progress" id="progress">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            <span class="sr-only">progressbar</span>
+        </div>
+    </div>
+</div>
+<!--游戏布局部分-->
+<div class="container main" id="box">
+     <ul id="ulist"></ul>
+</div>
+<!--按钮操作部分-->
+<div class="container btnBox">
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning" id="disorganize">打乱拼图</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-success" id="restore">还原拼图</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-info" id="gameText">游戏进度</button>
+        </div>
+    </div>
+</div>
+<!--末尾-->
+<!--模板-->
+<script type="text/template" id="image">
+    {{each list}}
+    <div class="col-sm-6 col-xs-6 col-lg-3 col-md-4">
+        <div class="thumbnail">
+            <img src="{{$value.url}}" alt="{{$value.alt}}">
+            <div class="caption">
+                <!--<p>{{$value.alt}}</p>-->
+                <p class="text-center">{{$value.url}}</p>
+                <p><a href="javascript:;" class="btn btn-primary url_set col-sm-offset-9" role="button" data-url="{{$value.url}}">选择</a></p>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</script>
+<!--js文件部分-->
+<script src="cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/template.js"></script>
+<script src="cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/index.js"></script>
+<script src="js/game.js"></script>
+<script>
+
+    $(function(){
+        //核心数据
+        var imageGroup=[
+            {"url":"image/1.jpg","alt":"图片1"},
+            {"url":"image/2.jpg","alt":"图片2"},
+            {"url":"image/3.jpg","alt":"图片3"},
+            {"url":"image/4.jpg","alt":"图片4"},
+            {"url":"image/5.jpg","alt":"图片5"},
+            {"url":"image/6.jpg","alt":"图片6"},
+            {"url":"image/7.jpg","alt":"图片7"},
+            {"url":"image/8.jpg","alt":"图片8"}
+        ],
+        url='',model = 0;
+        //模板渲染
+        $('#scanImage').html(template('image',{list:imageGroup}));
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#scanImage').on('click','.url_set',function(){
+            url=$(this).data('url');
+            $('#game-Img').html('图片:'+url);
+        });
+        $('.gameModel').on('click',function(){
+            //console.log($(this).val());
+            model=$(this).val();
+            $('#game-Mod').html('难度:'+ model +' X '+ model );
+        });
+
+        $.game({
+            model:6,
+            imageWidth:640,
+            imageHeight:480,
+            Pad:3,
+            url:'image/1.jpg'
+        });
+
+        $('#gameStart').click(function(){
+            if(url===''||model===0){
+//                alert('请选择模式和图片');
+                $('#targetText').html('请选择图片和模式');
+                $('#target').click();
+                return false;
+            }
+            $('#ulist').empty();
+            $('#box').off('mousedown mouseenter','span');
+            $('#box').off();
+            $.game({
+                model:model,
+                url:url
+            });
+        });
+
+    });
+
+
+</script>
+</body>
+</html>
